@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Редактирование задачи</title>
+</h:head>
+<h:body>
+    <h1>Редактирование задачи</h1>
+
+    <h:form>
+        <h:panelGrid columns="2">
+            <h:outputLabel for="title">Название:</h:outputLabel>
+            <h:inputText id="title" value="#{taskBean.task.title}" required="true" />
+
+            <h:outputLabel for="user">Пользователь:</h:outputLabel>
+            <h:selectOneMenu id="user" value="#{taskBean.selectedUserId}" required="true">
+                <f:selectItems value="#{taskBean.allUsers}" var="user"
+                               itemLabel="#{user.name} (#{user.email})" itemValue="#{user.id}" />
+            </h:selectOneMenu>
+
+            <h:outputLabel for="completed">Выполнена:</h:outputLabel>
+            <h:selectBooleanCheckbox id="completed" value="#{taskBean.task.completed}" />
+
+            <h:panelGroup />
+            <h:commandButton value="Обновить" action="#{taskBean.updateTask}" />
+        </h:panelGrid>
+    </h:form>
+
+    <br />
+    <h:link value="Перейти на начальную страницу" outcome="/index.html" />
+</h:body>
+</html>
