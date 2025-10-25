@@ -6,11 +6,15 @@
     <title>Задачи пользователя</title>
 </h:head>
 <h:body>
+    <f:metadata>
+        <f:viewParam name="userId" value="#{taskBean.selectedUserId}" />
+        <f:event type="preRenderView" listener="#{taskBean.loadTasksByUserId}" />
+    </f:metadata>
+
     <h1>Задачи пользователя</h1>
 
-    <!-- Сообщения -->
-    <h:outputText value="#{taskBean.message}" style="color: green;"
-                  rendered="#{not empty taskBean.message}" />
+    <h:outputText value="#{taskBean.message}" rendered="#{not empty taskBean.message}" />
+    <br /><br />
 
     <h:dataTable value="#{taskBean.tasksByUser}" var="task">
         <h:column>
@@ -30,19 +34,22 @@
 
         <h:column>
             <f:facet name="header">Статус</f:facet>
-            <h:outputText value="#{task.completed ? 'Завершена' : 'В работе'}" />
+            #{task.completed ? 'Завершена' : 'В работе'}
         </h:column>
 
         <h:column>
             <f:facet name="header">Действия</f:facet>
-            <h:form>
-                <h:commandLink value="Удалить" action="#{taskBean.deleteTask(task.id)}"
-                               onclick="return confirm('Удалить задачу?')" />
-            </h:form>
+            <h:commandLink value="Удалить" action="#{taskBean.deleteTask(task.id)}"
+                           onclick="return confirm('Удалить задачу #{task.title}?')" />
         </h:column>
     </h:dataTable>
 
     <br />
-    <h:link value="Перейти на начальную страницу" outcome="/index.html" />
+    <hr />
+    <h:link value="На главную" outcome="/index.xhtml" />
+    <br />
+    <h:link value="Список задач" outcome="/task/list.xhtml" />
+    <br />
+    <h:link value="Список пользователей" outcome="/user/list.xhtml" />
 </h:body>
 </html>

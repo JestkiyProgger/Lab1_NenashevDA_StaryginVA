@@ -1,29 +1,49 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 <h:head>
     <title>Редактирование пользователя</title>
 </h:head>
 <h:body>
+    <f:metadata>
+        <f:viewParam name="id" value="#{userBean.user.id}" />
+        <f:event type="preRenderView" listener="#{userBean.loadUserById}" />
+    </f:metadata>
+
     <h1>Редактирование пользователя</h1>
 
+    <h:outputText value="#{userBean.message}" rendered="#{not empty userBean.message}" />
+    <br />
+
     <h:form>
-        <h:panelGrid columns="2">
+        <h:panelGrid columns="3">
             <h:outputLabel for="name">Имя:</h:outputLabel>
-            <h:inputText id="name" value="#{userBean.user.name}" required="true" />
+            <h:inputText id="name" value="#{userBean.user.name}" required="true"
+                         requiredMessage="Введите имя"/>
+            <h:message for="name" />
 
             <h:outputLabel for="email">Email:</h:outputLabel>
-            <h:inputText id="email" value="#{userBean.user.email}" required="true" />
+            <h:inputText id="email" value="#{userBean.user.email}" required="true"
+                         requiredMessage="Введите email"/>
+            <h:message for="email" />
 
             <h:outputLabel for="age">Возраст:</h:outputLabel>
-            <h:inputText id="age" value="#{userBean.user.age}" required="true" />
+            <h:inputText id="age" value="#{userBean.user.age}" required="true"
+                         requiredMessage="Введите возраст"/>
+            <h:message for="age" />
 
-            <h:panelGroup />
+            <h:panelGroup>
             <h:commandButton value="Обновить" action="#{userBean.updateUser}" />
+            <h:commandButton value="Отмена" action="#{userBean.cancel}" immediate="true" />
+            </h:panelGroup>
         </h:panelGrid>
     </h:form>
 
     <br />
-    <h:link value="Перейти на начальную страницу" outcome="/index.html" />
+    <hr />
+    <h:link value="На главную" outcome="/index.xhtml" />
+    <br />
+    <h:link value="Список пользователей" outcome="/user/list.xhtml" />
 </h:body>
 </html>

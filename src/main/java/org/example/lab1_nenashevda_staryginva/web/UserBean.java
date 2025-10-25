@@ -45,15 +45,37 @@ public class UserBean implements Serializable {
     }
 
     public String deleteUser(Integer id) {
+        User userToDelete = userService.getUserById(id);
+        if (userToDelete == null) {
+            message = "Пользователь не найден";
+            return null;
+        }
+
+        long taskCount = taskService.getTaskCountByUser(id);
+        if (taskCount > 0) {
+            message = "Невозможно удалить пользователя: у него есть " + taskCount + " задач";
+            return null;
+        }
+
         userService.deleteUser(id);
         loadUsers();
-        message = "Пользователь успешно удален!";
+        message = "Пользователь удален";
         return "list?faces-redirect=true";
     }
 
     public String editUser(Integer id) {
-        this.user = userService.getUserById(id);
-        return "edit?faces-redirect=true";
+        try {
+            this.user = userService.getUserById(id);
+            if (this.user != null) {
+                return "edit?faces-redirect=true";
+            } else {
+                message = "Ошибка: пользователь не найден!";
+                return null;
+            }
+        } catch (Exception e) {
+            message = "Ошибка при загрузке пользователя: " + e.getMessage();
+            return null;
+        }
     }
 
     public String updateUser() {
@@ -80,14 +102,7 @@ public class UserBean implements Serializable {
         return message;
     }
 
-    public Task getLatestTaskForUser(User user) {
-        if (user == null || user.getId() == null) {
-            return null;
-        }
-        return taskService.getLatestTaskForUser(user.getId());
-    }
-
-    public String getShortTaskContent(Object contentOrTask, Number maxLengthNumber) {
+/*    public String getShortTaskContent(Object contentOrTask, Number maxLengthNumber) {
         if (contentOrTask == null) {
             return "";
         }
@@ -110,7 +125,6 @@ public class UserBean implements Serializable {
             try {
                 maxLength = Math.max(0, maxLengthNumber.intValue());
             } catch (Exception ex) {
-                // Используем значение по умолчанию
             }
         }
 
@@ -122,7 +136,7 @@ public class UserBean implements Serializable {
 
     public String getShortTaskContent(String fullContent, Long maxLength) {
         return getShortTaskContent((Object) fullContent, maxLength);
-    }
+    }*/
 
     public String getTaskStatus(Task task) {
         if (task == null) return "Нет задач";
@@ -133,4 +147,28 @@ public class UserBean implements Serializable {
         if (task == null) return "";
         return task.getCompleted() ? "color: green;" : "color: orange;";
     }
+
+    public void loadUserById() {
+        try {
+            if (user.getId() != null) {
+                User loadedUser = userService.getUserById(user.getId());
+                if (loadedUser != null) {
+                    this.user.setName(loadedUser.getName());
+                    this.user.setEmail(loadedUser.getEmail());
+                    this.user.setAge(loadedUser.getAge());
+                } else {
+                    message = "Пользователь не найден!";
+                }
+            }
+        } catch (Exception e) {
+            message = "Ошибка при загрузке пользователя: " + e.getMessage();
+        }
+    }
+
+    public String cancel() {
+        user = new User();
+        message = null;
+        return "list?faces-redirect=true";
+    }
+
 }

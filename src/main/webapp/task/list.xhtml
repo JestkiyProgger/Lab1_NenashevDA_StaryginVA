@@ -9,26 +9,35 @@
     <h1>Управление задачами</h1>
 
     <h:outputText value="#{taskBean.message}" rendered="#{not empty taskBean.message}" />
+    <br /><br />
 
     <h:form>
-        <h:panelGrid columns="2">
-            <h:outputLabel for="title">Название:</h:outputLabel>
-            <h:inputText id="title" value="#{taskBean.task.title}" required="true" />
+        <h:panelGrid columns="3">
+            <h:outputLabel for="title">Название: *</h:outputLabel>
+            <h:inputText id="title" value="#{taskBean.task.title}" required="true"
+                         requiredMessage="Введите название задачи"/>
+            <h:message for="title" />
 
-            <h:outputLabel for="user">Пользователь:</h:outputLabel>
-            <h:selectOneMenu id="user" value="#{taskBean.selectedUserId}" required="true">
+            <h:outputLabel for="user">Пользователь: *</h:outputLabel>
+            <h:selectOneMenu id="user" value="#{taskBean.selectedUserId}" required="true"
+                             requiredMessage="Выберите пользователя">
                 <f:selectItem itemLabel="Выберите пользователя" itemValue="" />
                 <f:selectItems value="#{taskBean.allUsers}" var="user"
                                itemLabel="#{user.name} (#{user.email})" itemValue="#{user.id}" />
             </h:selectOneMenu>
+            <h:message for="user" />
 
             <h:outputLabel for="completed">Выполнена:</h:outputLabel>
             <h:selectBooleanCheckbox id="completed" value="#{taskBean.task.completed}" />
+            <h:panelGroup />
 
             <h:panelGroup />
             <h:commandButton value="Добавить задачу" action="#{taskBean.addTask}" />
+            <h:panelGroup />
         </h:panelGrid>
     </h:form>
+
+    <hr />
 
     <h2>Список задач</h2>
     <h:dataTable value="#{taskBean.tasks}" var="task">
@@ -54,21 +63,32 @@
 
         <h:column>
             <f:facet name="header">Статус</f:facet>
-            <h:outputText value="#{task.completed ? 'Завершена' : 'В работе'}"
-                          style="color: #{task.completed ? 'green' : 'orange'};" />
+            <h:outputText value="#{task.completed ? 'Завершена' : 'В работе'}" />
         </h:column>
 
         <h:column>
             <f:facet name="header">Действия</f:facet>
-            <h:commandLink value="Редактировать" action="#{taskBean.editTask(task.id)}" />
-            <h:commandLink value="Удалить" action="#{taskBean.deleteTask(task.id)}"
-                           onclick="return confirm('Удалить задачу?')" />
-            <h:commandLink value="#{task.completed ? 'Возобновить' : 'Завершить'}"
-                           action="#{taskBean.toggleTaskCompletion(task.id)}" />
+
+            <h:link value="Редактировать" outcome="/task/edit.xhtml">
+                <f:param name="id" value="#{task.id}" />
+            </h:link>
+
+            <h:form>
+                <h:commandLink value="Удалить" action="#{taskBean.deleteTask(task.id)}"
+                               onclick="return confirm('Удалить задачу #{task.title}?')" />
+            </h:form>
+
+            <h:form>
+                <h:commandLink value="#{task.completed ? 'Возобновить' : 'Завершить'}"
+                               action="#{taskBean.toggleTaskCompletion(task.id)}" />
+            </h:form>
         </h:column>
     </h:dataTable>
 
     <br />
-    <h:link value="Перейти на начальную страницу" outcome="/index.html" />
+    <hr />
+    <h:link value="На главную" outcome="/index.xhtml" />
+    <br />
+    <h:link value="Управление пользователями" outcome="/user/list.xhtml" />
 </h:body>
 </html>

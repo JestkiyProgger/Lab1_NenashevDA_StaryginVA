@@ -6,28 +6,45 @@
     <title>Редактирование задачи</title>
 </h:head>
 <h:body>
+    <f:metadata>
+        <f:viewParam name="id" value="#{taskBean.task.id}" />
+        <f:event type="preRenderView" listener="#{taskBean.loadTaskById}" />
+    </f:metadata>
+
     <h1>Редактирование задачи</h1>
 
-    <h:form>
-        <h:panelGrid columns="2">
-            <h:outputLabel for="title">Название:</h:outputLabel>
-            <h:inputText id="title" value="#{taskBean.task.title}" required="true" />
+    <h:outputText value="#{taskBean.message}" rendered="#{not empty taskBean.message}" />
+    <br />
 
-            <h:outputLabel for="user">Пользователь:</h:outputLabel>
-            <h:selectOneMenu id="user" value="#{taskBean.selectedUserId}" required="true">
+    <h:form>
+        <h:panelGrid columns="3">
+            <h:outputLabel for="title">Название: *</h:outputLabel>
+            <h:inputText id="title" value="#{taskBean.task.title}" required="true"
+                         requiredMessage="Введите название задачи"/>
+            <h:message for="title" />
+
+            <h:outputLabel for="user">Пользователь: *</h:outputLabel>
+            <h:selectOneMenu id="user" value="#{taskBean.selectedUserId}" required="true"
+                             requiredMessage="Выберите пользователя">
                 <f:selectItems value="#{taskBean.allUsers}" var="user"
                                itemLabel="#{user.name} (#{user.email})" itemValue="#{user.id}" />
             </h:selectOneMenu>
+            <h:message for="user" />
 
             <h:outputLabel for="completed">Выполнена:</h:outputLabel>
             <h:selectBooleanCheckbox id="completed" value="#{taskBean.task.completed}" />
+            <h:panelGroup />
 
             <h:panelGroup />
             <h:commandButton value="Обновить" action="#{taskBean.updateTask}" />
+            <h:commandButton value="Отмена" action="#{taskBean.cancel}" immediate="true" />
         </h:panelGrid>
     </h:form>
 
     <br />
-    <h:link value="Перейти на начальную страницу" outcome="/index.html" />
+    <hr />
+    <h:link value="На главную" outcome="/index.xhtml" />
+    <br />
+    <h:link value="Список задач" outcome="/task/list.xhtml" />
 </h:body>
 </html>

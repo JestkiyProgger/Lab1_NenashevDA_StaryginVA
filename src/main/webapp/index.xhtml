@@ -7,12 +7,16 @@
 <h:body>
     <h1>Добро пожаловать в систему управления задачами</h1>
 
-    <h:link value="Управление пользователями" outcome="/user/list" />
-    <br />
-    <h:link value="Изменить пользователя" outcome="/user/edit" />
-    <br />
-    <h:link value="Управление задачами" outcome="/task/list" />
-    <br />
-    <h:link value="Изменить задачу" outcome="/task/edit" />
+    <p>
+        <h:link value="Управление пользователями" outcome="/user/list.xhtml" />
+    </p>
+    <p>
+        <h:link value="Управление задачами" outcome="/task/list.xhtml" />
+    </p>
+
+    <hr />
+    <h3>Статистика системы:</h3>
+    <p>Всего пользователей: #{userBean.users.size()}</p>
+    <p>Всего задач: #{taskBean.tasks.size()}</p>
 </h:body>
 </html>

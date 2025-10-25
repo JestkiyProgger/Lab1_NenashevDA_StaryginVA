@@ -1,12 +1,14 @@
 package org.example.lab1_nenashevda_staryginva.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -16,25 +18,33 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank
+    @Size(min = 2, max = 128)
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Email
+    @NotBlank
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Min(18)
+    @Max(75)
     @Column(name = "age", nullable = false)
-    private Long age;
+    private Integer age;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Task> tasks = new ArrayList<>();
 
     public User() {
     }
 
-    public User(String name, String email, Long age) {
+    public User(String name, String email, Integer age) {
         this.name = name;
         this.email = email;
         this.age = age;
     }
 
-    // Геттеры и сеттеры
     public Integer getId() {
         return id;
     }
@@ -59,12 +69,30 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Long getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(Long age) {
+    public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void addTask(Task task) {
+        tasks.add(task);
+        task.setUser(this);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+        task.setUser(null);
     }
 
     @Override

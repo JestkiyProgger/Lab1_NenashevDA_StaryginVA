@@ -4,7 +4,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
     <persistence-unit name="userTask" transaction-type="JTA">
-        <jta-data-source>jdbc/Lab1_NenashevDA_StaryginVA</jta-data-source>
+        <jta-data-source>jdbc/l1_nenashevda_staryginva</jta-data-source>
         <class>org.example.lab1_nenashevda_staryginva.model.Task</class>
         <class>org.example.lab1_nenashevda_staryginva.model.User</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>

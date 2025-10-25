@@ -1,17 +1,11 @@
 package org.example.lab1_nenashevda_staryginva.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
@@ -21,31 +15,35 @@ public class Task implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "title")
+    @NotBlank
+    @Size(min = 1, max = 255)
+    @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
     private User user;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "created_date")
-    private Date createdDate;
+    @Column(name = "created_date", nullable = false)
+    @NotNull
+    private LocalDate createdDate;
 
-    @Column(name = "completed")
-    private Boolean completed;
+    @Column(name = "completed", nullable = false)
+    @NotNull
+    private Boolean completed = false;
 
     public Task() {
+        this.createdDate = LocalDate.now();
     }
 
-    public Task(String title, User user, Date createdDate, Boolean completed) {
+    public Task(String title, User user, LocalDate createdDate, Boolean completed) {
         this.title = title;
         this.user = user;
-        this.createdDate = createdDate;
-        this.completed = completed;
+        this.createdDate = createdDate != null ? createdDate : LocalDate.now();
+        this.completed = completed != null ? completed : false;
     }
 
-    // Геттеры и сеттеры
     public Integer getId() {
         return id;
     }
@@ -70,11 +68,11 @@ public class Task implements Serializable {
         this.user = user;
     }
 
-    public Date getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -95,7 +93,7 @@ public class Task implements Serializable {
         return "Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", user=" + (user != null ? user.getName() : "null") +
+                ", userId=" + (user != null ? user.getId() : "null") +
                 ", createdDate=" + createdDate +
                 ", completed=" + completed +
                 '}';

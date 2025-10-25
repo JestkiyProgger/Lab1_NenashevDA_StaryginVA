@@ -10,7 +10,7 @@ import org.example.lab1_nenashevda_staryginva.service.TaskService;
 import org.example.lab1_nenashevda_staryginva.service.UserService;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Named
@@ -29,6 +29,7 @@ public class TaskBean implements Serializable {
     private Integer selectedUserId;
     private String message;
 
+
     @PostConstruct
     public void init() {
         loadTasks();
@@ -40,10 +41,13 @@ public class TaskBean implements Serializable {
 
     public String addTask() {
         User user = userService.getUserById(selectedUserId);
+        if (user == null) {
+            message = "Пользователь не найден";
+            return null;
+        }
         task.setUser(user);
-        task.setCreatedDate(new Date());
+        task.setCreatedDate(LocalDate.now());
 
-        // Если completed не установлен, устанавливаем false
         if (task.getCompleted() == null) {
             task.setCompleted(false);
         }
@@ -51,7 +55,7 @@ public class TaskBean implements Serializable {
         taskService.addTask(task);
         loadTasks();
         task = new Task();
-        message = "Задача успешно добавлена!";
+        message = "Задача добавлена";
         return "list?faces-redirect=true";
     }
 
@@ -91,7 +95,52 @@ public class TaskBean implements Serializable {
             loadTasks();
             message = "Статус задачи обновлен!";
         }
-        return null; // Остаемся на той же странице
+        return null;
+    }
+
+    public void loadTasksByUserId() {
+        try {
+            if (selectedUserId != null) {
+                this.tasksByUser = taskService.getTasksByUser(selectedUserId);
+
+                User user = userService.getUserById(selectedUserId);
+                if (user != null) {
+                    this.message = "Задачи пользователя: " + user.getName();
+                }
+            } else {
+                this.message = "ID пользователя не указан";
+            }
+        } catch (Exception e) {
+            message = "Ошибка при загрузке задач: " + e.getMessage();
+        }
+    }
+
+    public void loadTaskById() {
+        try {
+            if (task.getId() != null) {
+                Task loadedTask = taskService.getTaskById(task.getId());
+                if (loadedTask != null) {
+                    this.task.setTitle(loadedTask.getTitle());
+                    this.task.setCompleted(loadedTask.getCompleted());
+                    this.task.setCreatedDate(loadedTask.getCreatedDate());
+
+                    if (loadedTask.getUser() != null) {
+                        this.selectedUserId = loadedTask.getUser().getId();
+                    }
+                } else {
+                    message = "Задача не найдена!";
+                }
+            }
+        } catch (Exception e) {
+            message = "Ошибка при загрузке задачи: " + e.getMessage();
+        }
+    }
+
+    public String cancel() {
+        task = new Task();
+        selectedUserId = null;
+        message = null;
+        return "list?faces-redirect=true";
     }
 
     public Task getTask() {
@@ -130,7 +179,6 @@ public class TaskBean implements Serializable {
         return userService.getAllUsers();
     }
 
-    // Методы для фильтрации задач
     public List<Task> getCompletedTasks() {
         return taskService.getCompletedTasks();
     }

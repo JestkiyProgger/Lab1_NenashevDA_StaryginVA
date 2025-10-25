@@ -22,11 +22,19 @@ public class UserService {
     }
 
     public void addUser(User user) {
-        em.persist(user);
+        try {
+            em.persist(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка при создании пользователя: " + e.getMessage(), e);
+        }
     }
 
     public void updateUser(User user) {
-        em.merge(user);
+        try {
+            em.merge(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка при обновлении пользователя: " + e.getMessage(), e);
+        }
     }
 
     public void deleteUser(Integer id) {
@@ -36,22 +44,18 @@ public class UserService {
         }
     }
 
-    // Дополнительные методы для вашей бизнес-логики
     public List<User> getUsersByAgeRange(Integer minAge, Integer maxAge) {
         return em.createQuery("SELECT u FROM User u WHERE u.age BETWEEN :minAge AND :maxAge", User.class)
-                .setParameter("minAge", minAge.longValue())
-                .setParameter("maxAge", maxAge.longValue())
+                .setParameter("minAge", minAge)
+                .setParameter("maxAge", maxAge)
                 .getResultList();
     }
 
     public User getUserByEmail(String email) {
-        try {
-            return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
-        } catch (Exception e) {
-            return null; // или обработать исключение
-        }
+        List<User> users = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultList();
+        return users.isEmpty() ? null : users.get(0);
     }
 
     public List<User> getUsersByName(String name) {

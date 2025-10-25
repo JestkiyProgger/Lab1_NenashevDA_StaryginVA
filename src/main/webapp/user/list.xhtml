@@ -11,18 +11,25 @@
     <h:outputText value="#{userBean.message}" rendered="#{not empty userBean.message}" />
 
     <h:form>
-        <h:panelGrid columns="2">
-            <h:outputLabel for="name">Имя:</h:outputLabel>
-            <h:inputText id="name" value="#{userBean.user.name}" required="true" />
+        <h:panelGrid columns="3">
+            <h:outputLabel for="name">Имя: *</h:outputLabel>
+            <h:inputText id="name" value="#{userBean.user.name}" required="true"
+                         requiredMessage="Введите имя"/>
+            <h:message for="name" />
 
-            <h:outputLabel for="email">Email:</h:outputLabel>
-            <h:inputText id="email" value="#{userBean.user.email}" required="true" />
+            <h:outputLabel for="email">Email: *</h:outputLabel>
+            <h:inputText id="email" value="#{userBean.user.email}" required="true"
+                         requiredMessage="Введите email"/>
+            <h:message for="email" />
 
-            <h:outputLabel for="age">Возраст:</h:outputLabel>
-            <h:inputText id="age" value="#{userBean.user.age}" required="true" />
+            <h:outputLabel for="age">Возраст: *</h:outputLabel>
+            <h:inputText id="age" value="#{userBean.user.age}" required="true"
+                         requiredMessage="Введите возраст"/>
+            <h:message for="age" />
 
             <h:panelGroup />
             <h:commandButton value="Добавить пользователя" action="#{userBean.addUser}" />
+            <h:panelGroup />
         </h:panelGrid>
     </h:form>
 
@@ -49,26 +56,29 @@
         </h:column>
 
         <h:column>
-            <f:facet name="header">Последняя задача</f:facet>
-            <h:outputText value="#{userBean.getShortTaskContent(userBean.getLatestTaskForUser(user), 50)}" />
-        </h:column>
-
-        <h:column>
-            <f:facet name="header">Статус</f:facet>
-            <h:outputText value="#{userBean.getTaskStatus(userBean.getLatestTaskForUser(user))}"
-                          style="#{userBean.getTaskStatusStyle(userBean.getLatestTaskForUser(user))}" />
+            <f:facet name="header">Количество задач</f:facet>
+            #{taskBean.getTaskCountByUser(user.id)}
         </h:column>
 
         <h:column>
             <f:facet name="header">Действия</f:facet>
-            <h:commandLink value="Редактировать" action="#{userBean.editUser(user.id)}" />
+            <h:link value="Редактировать" outcome="/user/edit.xhtml">
+                <f:param name="id" value="#{user.id}" />
+            </h:link>
+            |
             <h:commandLink value="Удалить" action="#{userBean.deleteUser(user.id)}"
-                           onclick="return confirm('Удалить пользователя?')" />
-            <h:commandLink value="Задачи" action="#{taskBean.viewTasksByUser(user.id)}" />
+                           onclick="return confirm('Удалить пользователя #{user.name}?')" />
+            |
+            <h:link value="Задачи" outcome="/task/tasksByUser.xhtml">
+                <f:param name="userId" value="#{user.id}" />
+            </h:link>
         </h:column>
     </h:dataTable>
 
     <br />
-    <h:link value="Перейти на начальную страницу" outcome="/index.html" />
+    <hr />
+    <h:link value="На главную" outcome="/index.xhtml" />
+    <br />
+    <h:link value="Управление задачами" outcome="/task/list.xhtml" />
 </h:body>
 </html>
