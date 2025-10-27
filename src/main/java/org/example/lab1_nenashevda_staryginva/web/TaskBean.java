@@ -11,7 +11,9 @@ import org.example.lab1_nenashevda_staryginva.service.UserService;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named
 @SessionScoped
@@ -37,6 +39,12 @@ public class TaskBean implements Serializable {
 
     public void loadTasks() {
         tasks = taskService.getAllTasks();
+
+        if (tasks != null) {
+            tasks = tasks.stream()
+                    .sorted(Comparator.comparing(Task::getId))
+                    .collect(Collectors.toList());
+        }
     }
 
     public String addTask() {

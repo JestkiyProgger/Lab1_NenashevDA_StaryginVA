@@ -39,8 +39,17 @@
 
         <h:column>
             <f:facet name="header">Действия</f:facet>
-            <h:commandLink value="Удалить" action="#{taskBean.deleteTask(task.id)}"
-                           onclick="return confirm('Удалить задачу #{task.title}?')" />
+            <h:form>
+                <h:link value="Редактировать" outcome="/task/edit.xhtml">
+                    <f:param name="id" value="#{task.id}" />
+                </h:link>
+                |
+                <h:commandLink value="Удалить" action="#{taskBean.deleteTask(task.id)}"
+                               onclick="return confirm('Удалить задачу #{task.title}?')" />
+                |
+                <h:commandLink value="#{task.completed ? 'Возобновить' : 'Завершить'}"
+                               action="#{taskBean.toggleTaskCompletion(task.id)}" />
+            </h:form>
         </h:column>
     </h:dataTable>
 
@@ -48,8 +57,8 @@
     <hr />
     <h:link value="На главную" outcome="/index.xhtml" />
     <br />
-    <h:link value="Список задач" outcome="/task/list.xhtml" />
+    <h:link value="Управление задачами" outcome="/task/list.xhtml" />
     <br />
-    <h:link value="Список пользователей" outcome="/user/list.xhtml" />
+    <h:link value="Управление пользователями" outcome="/user/list.xhtml" />
 </h:body>
 </html>

@@ -45,15 +45,6 @@ public class TaskService {
         return query.getResultList();
     }
 
-/*    public Task getLatestTaskForUser(Integer userId) {
-        TypedQuery<Task> query = em.createQuery(
-                "SELECT t FROM Task t WHERE t.user.id = :userId ORDER BY t.createdDate DESC", Task.class);
-        query.setParameter("userId", userId);
-        query.setMaxResults(1);
-        List<Task> tasks = query.getResultList();
-        return tasks.isEmpty() ? null : tasks.get(0);
-    }*/
-
     public List<Task> getCompletedTasks() {
         TypedQuery<Task> query = em.createQuery(
                 "SELECT t FROM Task t WHERE t.completed = true", Task.class);

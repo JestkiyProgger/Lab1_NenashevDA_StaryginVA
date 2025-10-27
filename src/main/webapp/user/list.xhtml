@@ -62,16 +62,18 @@
 
         <h:column>
             <f:facet name="header">Действия</f:facet>
-            <h:link value="Редактировать" outcome="/user/edit.xhtml">
-                <f:param name="id" value="#{user.id}" />
-            </h:link>
-            |
-            <h:commandLink value="Удалить" action="#{userBean.deleteUser(user.id)}"
-                           onclick="return confirm('Удалить пользователя #{user.name}?')" />
-            |
-            <h:link value="Задачи" outcome="/task/tasksByUser.xhtml">
-                <f:param name="userId" value="#{user.id}" />
-            </h:link>
+            <h:form>
+                <h:link value="Редактировать" outcome="/user/edit.xhtml">
+                    <f:param name="id" value="#{user.id}" />
+                </h:link>
+                |
+                <h:commandLink value="Удалить" action="#{userBean.deleteUser(user.id)}"
+                               onclick="return confirm('Удалить пользователя #{user.name}?')" />
+                |
+                <h:link value="Задачи" outcome="/task/tasksByUser.xhtml">
+                    <f:param name="userId" value="#{user.id}" />
+                </h:link>
+            </h:form>
         </h:column>
     </h:dataTable>
 

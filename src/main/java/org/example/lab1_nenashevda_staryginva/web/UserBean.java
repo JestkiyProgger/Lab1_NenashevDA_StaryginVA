@@ -11,7 +11,9 @@ import org.example.lab1_nenashevda_staryginva.service.TaskService;
 import org.example.lab1_nenashevda_staryginva.service.UserService;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named
 @SessionScoped
@@ -34,6 +36,12 @@ public class UserBean implements Serializable {
 
     public void loadUsers() {
         users = userService.getAllUsers();
+
+        if (users != null) {
+            users = users.stream()
+                    .sorted(Comparator.comparing(User::getId))
+                    .collect(Collectors.toList());
+        }
     }
 
     public String addUser() {
@@ -79,11 +87,27 @@ public class UserBean implements Serializable {
     }
 
     public String updateUser() {
-        userService.updateUser(user);
-        loadUsers();
-        user = new User();
-        message = "Пользователь успешно обновлен!";
-        return "list?faces-redirect=true";
+        try {
+            User existingUser = userService.getUserById(user.getId());
+            if (existingUser == null) {
+                message = "Пользователь не найден!";
+                return null;
+            }
+
+            existingUser.setName(user.getName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setAge(user.getAge());
+
+            userService.updateUser(existingUser);
+            loadUsers();
+            user = new User();
+            message = "Пользователь успешно обновлен!";
+            return "list?faces-redirect=true";
+
+        } catch (Exception e) {
+            message = "Ошибка при обновлении пользователя: " + e.getMessage();
+            return null;
+        }
     }
 
     public User getUser() {
@@ -101,42 +125,6 @@ public class UserBean implements Serializable {
     public String getMessage() {
         return message;
     }
-
-/*    public String getShortTaskContent(Object contentOrTask, Number maxLengthNumber) {
-        if (contentOrTask == null) {
-            return "";
-        }
-
-        String fullContent;
-
-        if (contentOrTask instanceof Task) {
-            Task task = (Task) contentOrTask;
-            fullContent = task.getTitle();
-        } else {
-            fullContent = contentOrTask.toString();
-        }
-
-        if (fullContent == null || fullContent.isEmpty()) {
-            return "";
-        }
-
-        int maxLength = 100;
-        if (maxLengthNumber != null) {
-            try {
-                maxLength = Math.max(0, maxLengthNumber.intValue());
-            } catch (Exception ex) {
-            }
-        }
-
-        if (fullContent.length() <= maxLength) {
-            return fullContent;
-        }
-        return fullContent.substring(0, maxLength) + "...";
-    }
-
-    public String getShortTaskContent(String fullContent, Long maxLength) {
-        return getShortTaskContent((Object) fullContent, maxLength);
-    }*/
 
     public String getTaskStatus(Task task) {
         if (task == null) return "Нет задач";
