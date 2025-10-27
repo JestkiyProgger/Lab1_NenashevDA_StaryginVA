@@ -48,7 +48,7 @@ public class UserBean implements Serializable {
         userService.addUser(user);
         loadUsers();
         user = new User();
-        message = "Пользователь успешно добавлен!";
+        message = "Пользователь успешно добавлен";
         return "list?faces-redirect=true";
     }
 
@@ -71,26 +71,11 @@ public class UserBean implements Serializable {
         return "list?faces-redirect=true";
     }
 
-    public String editUser(Integer id) {
-        try {
-            this.user = userService.getUserById(id);
-            if (this.user != null) {
-                return "edit?faces-redirect=true";
-            } else {
-                message = "Ошибка: пользователь не найден!";
-                return null;
-            }
-        } catch (Exception e) {
-            message = "Ошибка при загрузке пользователя: " + e.getMessage();
-            return null;
-        }
-    }
-
     public String updateUser() {
         try {
             User existingUser = userService.getUserById(user.getId());
             if (existingUser == null) {
-                message = "Пользователь не найден!";
+                message = "Пользователь не найден";
                 return null;
             }
 
@@ -101,7 +86,7 @@ public class UserBean implements Serializable {
             userService.updateUser(existingUser);
             loadUsers();
             user = new User();
-            message = "Пользователь успешно обновлен!";
+            message = "Пользователь успешно обновлен";
             return "list?faces-redirect=true";
 
         } catch (Exception e) {
@@ -126,16 +111,6 @@ public class UserBean implements Serializable {
         return message;
     }
 
-    public String getTaskStatus(Task task) {
-        if (task == null) return "Нет задач";
-        return task.getCompleted() ? "Завершена" : "В работе";
-    }
-
-    public String getTaskStatusStyle(Task task) {
-        if (task == null) return "";
-        return task.getCompleted() ? "color: green;" : "color: orange;";
-    }
-
     public void loadUserById() {
         try {
             if (user.getId() != null) {
@@ -145,7 +120,7 @@ public class UserBean implements Serializable {
                     this.user.setEmail(loadedUser.getEmail());
                     this.user.setAge(loadedUser.getAge());
                 } else {
-                    message = "Пользователь не найден!";
+                    message = "Пользователь не найден";
                 }
             }
         } catch (Exception e) {

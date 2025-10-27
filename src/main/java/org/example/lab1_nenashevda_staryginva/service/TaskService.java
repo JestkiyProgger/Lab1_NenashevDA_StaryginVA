@@ -45,33 +45,6 @@ public class TaskService {
         return query.getResultList();
     }
 
-    public List<Task> getCompletedTasks() {
-        TypedQuery<Task> query = em.createQuery(
-                "SELECT t FROM Task t WHERE t.completed = true", Task.class);
-        return query.getResultList();
-    }
-
-    public List<Task> getPendingTasks() {
-        TypedQuery<Task> query = em.createQuery(
-                "SELECT t FROM Task t WHERE t.completed = false", Task.class);
-        return query.getResultList();
-    }
-
-    public List<Task> getTasksByTitle(String title) {
-        TypedQuery<Task> query = em.createQuery(
-                "SELECT t FROM Task t WHERE LOWER(t.title) LIKE LOWER(:title)", Task.class);
-        query.setParameter("title", "%" + title + "%");
-        return query.getResultList();
-    }
-
-    public void markTaskAsCompleted(Integer taskId) {
-        Task task = em.find(Task.class, taskId);
-        if (task != null) {
-            task.setCompleted(true);
-            em.merge(task);
-        }
-    }
-
     public long getTaskCountByUser(Integer userId) {
         TypedQuery<Long> query = em.createQuery(
                 "SELECT COUNT(t) FROM Task t WHERE t.user.id = :userId", Long.class);

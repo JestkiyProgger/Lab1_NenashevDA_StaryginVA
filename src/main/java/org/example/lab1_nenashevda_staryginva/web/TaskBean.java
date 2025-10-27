@@ -70,14 +70,8 @@ public class TaskBean implements Serializable {
     public String deleteTask(Integer id) {
         taskService.deleteTask(id);
         loadTasks();
-        message = "Задача успешно удалена!";
+        message = "Задача успешно удалена";
         return "list?faces-redirect=true";
-    }
-
-    public String editTask(Integer id) {
-        this.task = taskService.getTaskById(id);
-        this.selectedUserId = task.getUser().getId();
-        return "edit?faces-redirect=true";
     }
 
     public String updateTask() {
@@ -86,13 +80,8 @@ public class TaskBean implements Serializable {
         taskService.updateTask(task);
         loadTasks();
         task = new Task();
-        message = "Задача успешно обновлена!";
+        message = "Задача успешно обновлена";
         return "list?faces-redirect=true";
-    }
-
-    public String viewTasksByUser(Integer userId) {
-        this.tasksByUser = taskService.getTasksByUser(userId);
-        return "tasksByUser?faces-redirect=true";
     }
 
     public String toggleTaskCompletion(Integer taskId) {
@@ -101,7 +90,7 @@ public class TaskBean implements Serializable {
             task.setCompleted(!task.getCompleted());
             taskService.updateTask(task);
             loadTasks();
-            message = "Статус задачи обновлен!";
+            message = "Статус задачи обновлен";
         }
         return null;
     }
@@ -112,9 +101,6 @@ public class TaskBean implements Serializable {
                 this.tasksByUser = taskService.getTasksByUser(selectedUserId);
 
                 User user = userService.getUserById(selectedUserId);
-                if (user != null) {
-                    this.message = "Задачи пользователя: " + user.getName();
-                }
             } else {
                 this.message = "ID пользователя не указан";
             }
@@ -136,7 +122,7 @@ public class TaskBean implements Serializable {
                         this.selectedUserId = loadedTask.getUser().getId();
                     }
                 } else {
-                    message = "Задача не найдена!";
+                    message = "Задача не найдена";
                 }
             }
         } catch (Exception e) {
@@ -185,14 +171,6 @@ public class TaskBean implements Serializable {
 
     public List<User> getAllUsers() {
         return userService.getAllUsers();
-    }
-
-    public List<Task> getCompletedTasks() {
-        return taskService.getCompletedTasks();
-    }
-
-    public List<Task> getPendingTasks() {
-        return taskService.getPendingTasks();
     }
 
     public long getTaskCountByUser(Integer userId) {
